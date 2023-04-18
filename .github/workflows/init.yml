@@ -1,0 +1,55 @@
+name: "New Repo Checklist"
+on:
+  - create
+  - workflow_dispatch
+
+jobs:
+  create-checklist:
+    runs-on: ubuntu-20.04
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.payload.repository.owner.login;
+            const repo = context.payload.repository.name;
+            const title = "New Repository Checklist";
+            const body = `Hey there~! This is the checklist that @naomi-lgbt follows when she sets up a repository from this template. We thought it might be helpful for you too.
+
+            - [ ] Update the repository about.
+              - [ ] Update the description.
+              - [ ] Update the website, when live.
+              - [ ] Update the topics (add \`hacktoberfest\` if applicable).
+              - [ ] Do not include packages or environments (unless deploying on GitHub Pages).
+              - [ ] Do not include the releases if you aren't going to keep up with SemVer.
+            - [ ] Update the repository settings.
+              - [ ] Disable the wiki.
+              - [ ] Disable the projects.
+              - [ ] Disallow merge commits.
+              - [ ] Disallow rebase merging.
+              - [ ] Automatically delete head branches
+            - [ ] Create branch protection rule.
+              - [ ] Require pull request reviews before merging.
+                - [ ] Require approvals - 1.
+                - [ ] Dismiss stale pull request approvals when new commits are pushed.
+              - [ ] Require status checks to pass before merging.
+                - [ ] Require branches to be up to date before merging.
+                - [ ] Status checks:
+                  - [ ] Analyse
+                  - [ ] Lint / Build / Test
+                  - [ ] Validate Dependencies are Pinned
+            - [ ] Grant actions read/write permissions (the PR labeller will not work without this).
+            - [ ] [Migrate Labels](https://naomi.lgbt/notes/#/transfer-labels).
+            - [ ] If not under an organisation, add the monitor webhook.
+            - [ ] Update the \`README.md\` file to remove the existing text and use the commented-out template.
+            - [ ] Delete the \`init.yml\` workflow (which triggered this issue).
+            `
+
+            await github.rest.issues.create({
+              owner,
+              repo,
+              title,
+              body
+            });
