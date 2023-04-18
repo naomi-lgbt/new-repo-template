@@ -5,6 +5,7 @@ on:
 
 jobs:
   create-checklist:
+    if: github.ref == 'refs/head/main'
     runs-on: ubuntu-20.04
     permissions:
       issues: write
